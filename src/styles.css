@@ -1,1 +1,39 @@
-/* You can add global styles to this file, and also import other style files */
+/* Contenedor principal para dar orden a los modulos */
+.content {
+    padding-inline-end: 2%;
+    padding-inline-start: 2%;
+    margin-top: 15px;
+    width: 100% !important;
+    min-width: fit-content;
+    max-width: 100%;
+}
+
+/* Estilo basico para los card que agrupan las diferentes secciones de los modulos*/
+.contenedor .card .card-header {
+    background-color: rgb(216, 216, 216);
+    border: 1;
+    border-color: black;
+}
+
+/* Proporciona un tamaño y vista apropiados de las tablas  */
+.table {
+    display: table;
+    border-collapse: collapse;
+    width: 100% !important;
+    min-width: fit-content;
+    max-width: 100%;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Quitar sombreado de campos no válidos en un formulario validado */
+.was-validated .form-control:valid,
+.was-validated .form-control:valid:focus {
+  border-color: #ced4da; /* Establece el color del borde a un color neutro */
+  box-shadow: none; /* Elimina cualquier sombra presente */
+  background-image: none;
+}
+

@@ -1,0 +1,105 @@
+<div class="content">
+    <!-- Encabezado busqueda -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Busqueda Avanzada</h5>
+        </div>
+        <div class="card-body">
+            <!-- Formulario de filtro -->
+            <form class="form-group was-validated" [formGroup]="filtrarForm" novalidate>
+                <div class="row">
+                    <div class="col-s-12 col-md-6">
+                        <label for="gameId">Numero de juegos: </label>
+                        <input type="text" class="form-control" formControlName="gameNumber" [pattern]="regNumero">
+                        <div class="invalid-feedback">Por favor ingrese solo números</div>
+                    </div>
+                    <div class="col-s-12 col-md-6">
+                        <label for="dayNight">Día/Noche: </label>
+                        <input type="text" class="form-control" formControlName="dayNight">
+                    </div>
+                    <div class="col-s-12 col-md-6">
+                        <label for="duration">Duracion: </label>
+                        <input type="text" class="form-control" formControlName="duration" [pattern]="regDuracion">
+                        <div class="invalid-feedback">Por favor use el formato similar a 2:33</div>
+                    </div>
+                    <div class="col-s-12 col-md-6">
+                        <label for="status">Estado: </label>
+                        <input type="text" class="form-control" formControlName="status">
+                    </div>
+                    <div class="col-s-12 col-md-6">
+                        <label for="year">Año: </label>
+                        <input type="text" class="form-control" formControlName="year" [pattern]="regAnio">
+                        <div class="invalid-feedback">Por favor ingrese solo años entre 1900 y 2023</div>
+                    </div>
+                    <div class="col-s-12 col-md-6">
+                        <label for="conditiaonal">Condicional: </label>
+                        <input type="text" class="form-control" formControlName="conditiaonal">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <button class="btn btn-primary" (click)="ejecutarConsultar()">Ejecutar consulta</button>&nbsp;&nbsp;
+                    <button class="btn btn-danger">Borrar</button>&nbsp;&nbsp;
+                    <button class="btn btn-success">Guardar Query</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+    <!-- Tabla de listado -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-4">
+                    <h5 class="card-title">Lista de preguntas de la cartilla</h5>
+                </div>
+            </div>
+        </div>
+        <!-- Tabla de resultados -->
+        <div class="card-body">
+            <table class="table table-bordered table-hover table-responsive">
+                <caption>Preguntas de la cartilla</caption>
+                <thead class="thead-col">
+                    <tr>
+                        <th scope="col" style="width: fit-content">gameId</th>
+                        <th scope="col" style="width: fit-content">gameNumber</th>
+                        <th scope="col" style="width: fit-content">seasonId</th>
+                        <th scope="col" style="width: fit-content">year</th>
+                        <th scope="col" style="width: fit-content">type</th>
+                        <th scope="col" style="width: fit-content">dayNight</th>
+                        <th scope="col" style="width: fit-content">duration</th>
+                        <th scope="col" style="width: fit-content">durationMinutes</th>
+                        <th scope="col" style="width: fit-content">homeTeamId</th>
+                        <th scope="col" style="width: fit-content">homeTeamName</th>
+                        <th scope="col" style="width: fit-content">awayTeamId</th>
+                        <th scope="col" style="width: fit-content">awayTeamName</th>
+                        <th scope="col" style="width: fit-content">startTime</th>
+                        <th scope="col" style="width: fit-content">attendance</th>
+                        <th scope="col" style="width: fit-content">status</th>
+                        <th scope="col" style="width: fit-content">created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of schedulesList">
+                        <td>{{s.gameId}}</td>
+                        <td>{{s.gameNumber}}</td>
+                        <td>{{s.seasonId}}</td>
+                        <td>{{s.year}}</td>
+                        <td>{{s.type}}</td>
+                        <td>{{s.dayNight}}</td>
+                        <td>{{s.duration}}</td>
+                        <td>{{s.durationMinutes}}</td>
+                        <td>{{s.homeTeamId}}</td>
+                        <td>{{s.homeTeamName}}</td>
+                        <td>{{s.awayTeamId}}</td>
+                        <td>{{s.awayTeamName}}</td>
+                        <td>{{s.startTime}}</td>
+                        <td>{{s.attendance}}</td>
+                        <td>{{s.status}}</td>
+                        <td>{{s.created}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
