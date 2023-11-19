@@ -18,7 +18,7 @@ export class QueryService {
 
   filter(name: any, userregister: any, pag: any, sizePag: any): Observable<any> {
 
-    const URL = GlobalConstants.URL_QUERY_FILTER;
+    const URL = GlobalConstants.URL_ENDPOINT + GlobalConstants.URL_QUERY_FILTER;
 
     let params = '';
 
@@ -51,20 +51,20 @@ export class QueryService {
 
   saveQuery(query: any):Observable<any>{
 
-    const URL = GlobalConstants.URL_QUERY;
+    const URL =  GlobalConstants.URL_ENDPOINT + GlobalConstants.URL_QUERY;
 
     return this.http.post<any>(URL, query);
   }
 
   updateQuery(query: any):Observable<any>{
 
-    const URL = GlobalConstants.URL_QUERY;
+    const URL =  GlobalConstants.URL_ENDPOINT + GlobalConstants.URL_QUERY;
 
     return this.http.put<any>(URL, query);
   }
 
   deleteQuery(query: any): Observable<any> {
-    const URL = GlobalConstants.URL_QUERY;
+    const URL =  GlobalConstants.URL_ENDPOINT + GlobalConstants.URL_QUERY;
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

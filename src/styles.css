@@ -3,6 +3,7 @@
     padding-inline-end: 2%;
     padding-inline-start: 2%;
     margin-top: 15px;
+    max-width: 100%;
     /* padding-inline-end: 2%;
     padding-inline-start: 2%;
     margin-top: 15px;
@@ -22,7 +23,6 @@
 .table {
     border-collapse: collapse;
     width: 100% !important;
-    max-width: 100%;
     /* display: table;
     border-collapse: collapse;
     width: 100% !important;
@@ -32,20 +32,23 @@
 
 /* Porporciona un tamaño a las tablas de forma responsiva */
 .table-responsive {
-    width: 100%;
+    width: 100% !important;
     overflow-x: auto;
 }
 
 .table-responsive .th {
-    white-space: normal; /* Permite el salto de línea */
-    word-wrap: break-word; /* Rompe la palabra si es necesario */
-  }
+    white-space: normal;
+    /* Permite el salto de línea */
+    word-wrap: break-word;
+    /* Rompe la palabra si es necesario */
+}
 
 /* Quitar sombreado de campos no válidos en un formulario validado */
 .was-validated .form-control:valid,
 .was-validated .form-control:valid:focus {
-  border-color: #ced4da; /* Establece el color del borde a un color neutro */
-  box-shadow: none; /* Elimina cualquier sombra presente */
-  background-image: none;
+    border-color: #ced4da;
+    /* Establece el color del borde a un color neutro */
+    box-shadow: none;
+    /* Elimina cualquier sombra presente */
+    background-image: none;
 }
-

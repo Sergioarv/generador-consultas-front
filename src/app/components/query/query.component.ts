@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { SchedulesDTO } from 'src/app/models/schedules-dto';
 import { BigQueryService } from 'src/app/services/big-query.service';
 
@@ -26,6 +27,9 @@ export class QueryComponent implements OnInit {
   totalPaginas: number[] = [];
   totalElements: number = 0;
 
+  // variable que activa la animación de carga
+  cargando = false;
+
   // Lista de los datos retornados por la api BigQuery de Google
   schedulesList: SchedulesDTO[];
 
@@ -40,16 +44,23 @@ export class QueryComponent implements OnInit {
   });
 
   constructor(
-    private bigQueryService: BigQueryService
+    private bigQueryService: BigQueryService,
+    private toastr: ToastrService
   ) {
     this.schedulesList = [];
   }
 
   ngOnInit(): void {
+    this.cargando = true;
+    setTimeout(() => {
+      this.cargando = false;
+    }, 2000);
   }
 
   // Método que ejecuta la consulta y solicita a la api Bigquery
   ejecutarConsultar() {
+
+    this.cargando = true;
 
     const gameNumber = this.filtrarForm.controls['gameNumber'].value;
     const dayNight = this.filtrarForm.controls['dayNight'].value;
@@ -65,7 +76,17 @@ export class QueryComponent implements OnInit {
         this.esUltimo = resp.data.last;
         this.totalPaginas = new Array(resp.data['totalPages']);
         this.totalElements = resp.data.totalElements;
+
+        this.cargando = false;
+
+        this.toastr.success(resp.message, "Proceso exitoso");
+      } else {
+        this.cargando = false;
+        this.toastr.warning(resp.message, "Proceso fallido");
       }
+    }, error => {
+      this.cargando = false;
+      this.toastr.error(error.message, "Proceso fallido");
     });
 
   }
@@ -77,6 +98,8 @@ export class QueryComponent implements OnInit {
     this.filtrarForm.get('dayNight')?.setValue('');
     this.filtrarForm.get('status')?.setValue('');
     this.filtrarForm.get('conditiaonal')?.setValue('');
+
+    this.ejecutarConsultar();
   }
 
   // Método encargado de cargar una página anterior y verifica si es la primer página

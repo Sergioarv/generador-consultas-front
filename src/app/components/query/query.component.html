@@ -1,4 +1,9 @@
 <div class="contentP">
+    <!-- animación de carga -->
+    <ngx-loading [show]="cargando"
+        [config]="{ backdropBorderRadius: '3px', primaryColour: '#00ff66', secondaryColour: '#ff6600', tertiaryColour: '#6600ff', fullScreenBackdrop: true }">
+    </ngx-loading>
+
     <!-- Encabezado busqueda -->
     <div class="card">
         <div class="card-header">
@@ -81,19 +86,19 @@
                 <!-- Encabezado de la tabla -->
                 <thead class="thead-col">
                     <tr>
-                        <th scope="col" style="width: fit-content">gameId</th>
-                        <th scope="col" style="width: fit-content">gameNumber</th>
-                        <th scope="col" style="width: fit-content">seasonId</th>
+                        <th scope="col" style="width: fit-content">game Id</th>
+                        <th scope="col" style="width: fit-content">game Number</th>
+                        <th scope="col" style="width: fit-content">season Id</th>
                         <th scope="col" style="width: fit-content">year</th>
                         <th scope="col" style="width: fit-content">type</th>
-                        <th scope="col" style="width: fit-content">dayNight</th>
+                        <th scope="col" style="width: fit-content">day Night</th>
                         <th scope="col" style="width: fit-content">duration</th>
-                        <th scope="col" style="width: fit-content">durationMinutes</th>
-                        <th scope="col" style="width: fit-content">homeTeamId</th>
-                        <th scope="col" style="width: fit-content">homeTeamName</th>
-                        <th scope="col" style="width: fit-content">awayTeamId</th>
-                        <th scope="col" style="width: fit-content">awayTeamName</th>
-                        <th scope="col" style="width: fit-content">startTime</th>
+                        <th scope="col" style="width: fit-content">duration Minutes</th>
+                        <th scope="col" style="width: fit-content">home Team Id</th>
+                        <th scope="col" style="width: fit-content">home Team Name</th>
+                        <th scope="col" style="width: fit-content">away Team Id</th>
+                        <th scope="col" style="width: fit-content">away Team Name</th>
+                        <th scope="col" style="width: fit-content">start Time</th>
                         <th scope="col" style="width: fit-content">attendance</th>
                         <th scope="col" style="width: fit-content">status</th>
                         <th scope="col" style="width: fit-content">created</th>
@@ -139,7 +144,8 @@
                                     </li>
                                     <li class="page-item" *ngFor="let p of totalPaginas; let i = index"
                                         [ngClass]="{'active': i === pag}">
-                                        <a class="page-link" (click)="setearPag(i)" *ngIf="mostrarPaginas(i)">{{ i + 1 }}</a>
+                                        <a class="page-link" (click)="setearPag(i)" *ngIf="mostrarPaginas(i)">{{ i + 1
+                                            }}</a>
                                     </li>
                                     <li class="page-item" [class.disabled]="esUltimo">
                                         <a class="page-link" (click)="avanzar()">Siguiente</a>
@@ -149,8 +155,7 @@
                                     </li>
                                     &nbsp;&nbsp;
                                     <li class="page-item">
-                                        <select class="custom-select" #cantidadP
-                                            (change)="setearCant(cantidadP.value)">
+                                        <select class="custom-select" #cantidadP (change)="setearCant(cantidadP.value)">
                                             <option value="5">{{ 5 }}</option>
                                             <option selected value="10">{{ 10 }}</option>
                                             <option value="15">{{ 15 }}</option>

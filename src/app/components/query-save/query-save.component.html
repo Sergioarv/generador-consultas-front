@@ -1,0 +1,72 @@
+<div class="contentP">
+    <!-- animación de carga -->
+    <ngx-loading [show]="cargando"
+        [config]="{ backdropBorderRadius: '3px', primaryColour: '#00ff66', secondaryColour: '#ff6600', tertiaryColour: '#6600ff', fullScreenBackdrop: true }">
+    </ngx-loading>
+
+    <!-- Encabezado busqueda -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Busqueda Avanzada</h5>
+        </div>
+        <div class="card-body">
+            <!-- Formulario de filtro -->
+            <form class="form-group was-validated" [formGroup]="filtrarForm" novalidate>
+                <div class="row">
+                    <!-- Nombre de query -->
+                    <div class="col-s-12 col-md-6">
+                        <label for="name">Nombre de query: </label>
+                        <input type="text" class="form-control" formControlName="name" [pattern]="regTexto">
+                        <div class="invalid-feedback">Por favor ingrese solo letras</div>
+                    </div>
+                    <!-- Nombre del usuario -->
+                    <div class="col-s-12 col-md-6">
+                        <label for="userregister">Usuario: </label>
+                        <input type="text" class="form-control" formControlName="userregister" [pattern]="regTexto">
+                        <div class="invalid-feedback">Por favor use el formato similar a 2:33</div>
+                    </div>
+                </div>
+                <br>
+                <!-- Botones de accion, buscar, limpiar y guardar query -->
+                <div class="row">
+                    <button class="btn btn-primary" (click)="filter()">Ejecutar consulta</button>&nbsp;&nbsp;
+                    <button class="btn btn-danger" (click)="limpiarFormFilter()">Borrar</button>&nbsp;&nbsp;
+                    <button class="btn btn-success">Guardar Query</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de listado -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="card-title">Lista de Querys guardadas</h5>
+                </div>
+            </div>
+        </div>
+        <!-- Tabla de resultados -->
+        <div class="card-body">
+            <table class="table table-bordered table-hover table-responsive">
+                <caption>Lista de Querys guardadas</caption>
+                <!-- Encabezado de la tabla -->
+                <thead class="thead-col">
+                    <tr>
+                        <th scope="col" style="width: calc(100vw/7);">Nombre de Query</th>
+                        <th scope="col" style="width: calc(100vw/6);">Nombre de Usuario</th>
+                        <th scope="col" style="width: calc(100vw/3);">Query guardada</th>
+                    </tr>
+                </thead>
+                <!-- Cuerpo de la tabla -->
+                <tbody>
+                    <tr *ngFor="let q of queryList">
+                        <td>{{ q.name }}</td>
+                        <td>{{ q.comments[0].userregister }}</td>
+                        <td>{{ q.querysave | querySaveToText }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 import { QuerySave } from "./query-save";
+import { Comment } from "./comment"
 
 export class Query {
     
