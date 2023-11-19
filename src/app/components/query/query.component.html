@@ -1,4 +1,4 @@
-<div class="content">
+<div class="contentP">
     <!-- Encabezado busqueda -->
     <div class="card">
         <div class="card-header">
@@ -8,38 +8,57 @@
             <!-- Formulario de filtro -->
             <form class="form-group was-validated" [formGroup]="filtrarForm" novalidate>
                 <div class="row">
+                    <!-- Numero de juegos del partido -->
                     <div class="col-s-12 col-md-6">
                         <label for="gameId">Numero de juegos: </label>
                         <input type="text" class="form-control" formControlName="gameNumber" [pattern]="regNumero">
                         <div class="invalid-feedback">Por favor ingrese solo números</div>
                     </div>
+                    <!-- Ciclo dia o noche del partido -->
                     <div class="col-s-12 col-md-6">
-                        <label for="dayNight">Día/Noche: </label>
-                        <input type="text" class="form-control" formControlName="dayNight">
+                        <label for="dayNight">Ciclo Día/Noche del partido: </label>
+                        <select class="form-control" formControlName="dayNight">
+                            <option selected value=''>Selecciona ciclo Día o Noche</option>
+                            <option value='D'>Día</option>
+                            <option value='N'>Noche</option>
+                        </select>
                     </div>
+                    <!-- duración en minutos y segungos (mm:ss) del partido -->
                     <div class="col-s-12 col-md-6">
                         <label for="duration">Duracion: </label>
                         <input type="text" class="form-control" formControlName="duration" [pattern]="regDuracion">
                         <div class="invalid-feedback">Por favor use el formato similar a 2:33</div>
                     </div>
+                    <!-- Estado del partido -->
                     <div class="col-s-12 col-md-6">
                         <label for="status">Estado: </label>
-                        <input type="text" class="form-control" formControlName="status">
+                        <select class="form-control" formControlName="status">
+                            <option selected value=''>Seleccione un estado del partido</option>
+                            <option value='closed'>Cerrado</option>
+                            <option value='canceled'>Cancelado</option>
+                            <option value='unnecessary'>Innecesario</option>
+                        </select>
                     </div>
+                    <!-- Año del partido -->
                     <div class="col-s-12 col-md-6">
                         <label for="year">Año: </label>
                         <input type="text" class="form-control" formControlName="year" [pattern]="regAnio">
                         <div class="invalid-feedback">Por favor ingrese solo años entre 1900 y 2023</div>
                     </div>
+                    <!-- Condicional de busqueda para más de 1 parametro -->
                     <div class="col-s-12 col-md-6">
                         <label for="conditiaonal">Condicional: </label>
-                        <input type="text" class="form-control" formControlName="conditiaonal">
+                        <select class="form-control" formControlName="conditiaonal">
+                            <option selected value=''>Condicional or (ó)</option>
+                            <option value='and'>Condicional and (y)</option>
+                        </select>
                     </div>
                 </div>
                 <br>
+                <!-- Botones de accion, buscar, limpiar y guardar query -->
                 <div class="row">
                     <button class="btn btn-primary" (click)="ejecutarConsultar()">Ejecutar consulta</button>&nbsp;&nbsp;
-                    <button class="btn btn-danger">Borrar</button>&nbsp;&nbsp;
+                    <button class="btn btn-danger" (click)="limpiarFormFilter()">Borrar</button>&nbsp;&nbsp;
                     <button class="btn btn-success">Guardar Query</button>
                 </div>
             </form>
@@ -50,15 +69,16 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-4">
-                    <h5 class="card-title">Lista de preguntas de la cartilla</h5>
+                <div class="col-12">
+                    <h5 class="card-title">Lista de BigQuery Programa de Juegos (schedules)</h5>
                 </div>
             </div>
         </div>
         <!-- Tabla de resultados -->
         <div class="card-body">
             <table class="table table-bordered table-hover table-responsive">
-                <caption>Preguntas de la cartilla</caption>
+                <caption>Lista de BigQuery Programa de Juegos (schedules)</caption>
+                <!-- Encabezado de la tabla -->
                 <thead class="thead-col">
                     <tr>
                         <th scope="col" style="width: fit-content">gameId</th>
@@ -79,6 +99,7 @@
                         <th scope="col" style="width: fit-content">created</th>
                     </tr>
                 </thead>
+                <!-- Cuerpo de la tabla -->
                 <tbody>
                     <tr *ngFor="let s of schedulesList">
                         <td>{{s.gameId}}</td>
@@ -97,6 +118,49 @@
                         <td>{{s.attendance}}</td>
                         <td>{{s.status}}</td>
                         <td>{{s.created}}</td>
+                    </tr>
+                    <!-- Mensaje para tabla vacia -->
+                    <tr *ngIf="totalElements == 0">
+                        <td colspan="16">
+                            <p style="text-align: center; font-size: x-large; color: red;">
+                                {{"Lista vacia"}}</p>
+                        </td>
+                    </tr>
+                    <!-- Paginación de la tabla -->
+                    <tr>
+                        <td colspan="16">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" [class.disabled]="esPrimero">
+                                        <a class="page-link" (click)="rebobinar(true)">Primero</a>
+                                    </li>
+                                    <li class="page-item" [class.disabled]="esPrimero">
+                                        <a class="page-link" (click)="rebobinar()">Anterior</a>
+                                    </li>
+                                    <li class="page-item" *ngFor="let p of totalPaginas; let i = index"
+                                        [ngClass]="{'active': i === pag}">
+                                        <a class="page-link" (click)="setearPag(i)" *ngIf="mostrarPaginas(i)">{{ i + 1 }}</a>
+                                    </li>
+                                    <li class="page-item" [class.disabled]="esUltimo">
+                                        <a class="page-link" (click)="avanzar()">Siguiente</a>
+                                    </li>
+                                    <li class="page-item" [class.disabled]="esUltimo">
+                                        <a class="page-link" (click)="avanzar(true)">Ultimo</a>
+                                    </li>
+                                    &nbsp;&nbsp;
+                                    <li class="page-item">
+                                        <select class="custom-select" #cantidadP
+                                            (change)="setearCant(cantidadP.value)">
+                                            <option value="5">{{ 5 }}</option>
+                                            <option selected value="10">{{ 10 }}</option>
+                                            <option value="15">{{ 15 }}</option>
+                                            <option value="20">{{ 20 }}</option>
+                                            <option value="25">{{ 25 }}</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </td>
                     </tr>
                 </tbody>
             </table>

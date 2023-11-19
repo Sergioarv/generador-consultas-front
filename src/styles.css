@@ -1,15 +1,18 @@
 /* Contenedor principal para dar orden a los modulos */
-.content {
+.contentP {
     padding-inline-end: 2%;
+    padding-inline-start: 2%;
+    margin-top: 15px;
+    /* padding-inline-end: 2%;
     padding-inline-start: 2%;
     margin-top: 15px;
     width: 100% !important;
     min-width: fit-content;
-    max-width: 100%;
+    max-width: 100%; */
 }
 
 /* Estilo basico para los card que agrupan las diferentes secciones de los modulos*/
-.contenedor .card .card-header {
+.contentP .card .card-header {
     background-color: rgb(216, 216, 216);
     border: 1;
     border-color: black;
@@ -17,17 +20,26 @@
 
 /* Proporciona un tamaño y vista apropiados de las tablas  */
 .table {
-    display: table;
+    border-collapse: collapse;
+    width: 100% !important;
+    max-width: 100%;
+    /* display: table;
     border-collapse: collapse;
     width: 100% !important;
     min-width: fit-content;
-    max-width: 100%;
+    max-width: 100%; */
 }
 
+/* Porporciona un tamaño a las tablas de forma responsiva */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
 }
+
+.table-responsive .th {
+    white-space: normal; /* Permite el salto de línea */
+    word-wrap: break-word; /* Rompe la palabra si es necesario */
+  }
 
 /* Quitar sombreado de campos no válidos en un formulario validado */
 .was-validated .form-control:valid,
