@@ -8,6 +8,7 @@ import { SchedulesDTO } from 'src/app/models/schedules-dto';
 import { BigQueryService } from 'src/app/services/big-query.service';
 import { QueryService } from 'src/app/services/query.service';
 import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-query',
@@ -62,6 +63,7 @@ export class QueryComponent implements OnInit {
     private toastr: ToastrService,
     private modalService: NgbModal,
     private config: NgbModalConfig,
+    private authService: AuthService
   ) {
     this.schedulesList = [];
     config.backdrop = 'static';
@@ -89,7 +91,7 @@ export class QueryComponent implements OnInit {
 
         sessionStorage.removeItem('querySave');
       }
-      
+
       this.cargando = false;
     }, 1000);
   }
@@ -193,17 +195,15 @@ export class QueryComponent implements OnInit {
       querySave.year = year;
 
       query.name = name;
-      query.createby = 'Sergio'; // Seleccionar usuario en sesion
+      query.createby = this.authService.getUser();
 
       if (commentary) {
         comment.commentary = commentary;
-        comment.userregister = "Pepito"; // Seleccionar usuario en sesion
-
+        comment.userregister = this.authService.getUser();
         query.comments.push(comment);
       }
 
       query.querysave = querySave;
-
       this.queryService.saveQuery(query).subscribe(resp => {
         if (resp.success) {
           this.modalService.dismissAll('Save click');
@@ -222,7 +222,6 @@ export class QueryComponent implements OnInit {
       this.cargando = false;
       this.toastr.warning("Por favor selecciona un campo de busqueda a guardar", "Proceso fallido");
     }
-
   }
 
   /** Funciones para abrir y cerrar modal ng **/

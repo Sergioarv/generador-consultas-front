@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Query } from 'src/app/models/query';
 import { Comment } from 'src/app/models/comment';
 import { QueryService } from 'src/app/services/query.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-query-save',
@@ -55,6 +56,7 @@ export class QuerySaveComponent implements OnInit {
     private route: Router,
     private modalService: NgbModal,
     private config: NgbModalConfig,
+    private authService: AuthService
   ) {
     this.queryList = [];
     this.commentList = [];
@@ -147,7 +149,7 @@ export class QuerySaveComponent implements OnInit {
     this.cargando = true;
 
     const newComentario = this.commentsForm.controls['commentary'].value;
-    const userregister = 'Pepito2'; // obtener usuario de sesion
+    const userregister = this.authService.getUser();
 
     const newComment = new Comment();
     newComment.commentary = newComentario;

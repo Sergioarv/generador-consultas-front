@@ -14,6 +14,8 @@ import { QuerySaveToTextPipe } from './utils/pipe/query-save-to-text.pipe';
 import { NgxLoadingModule } from 'ngx-loading';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
+import { LoginComponent } from './components/login/login.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 
 
@@ -22,7 +24,9 @@ import { ToastrModule } from 'ngx-toastr';
     AppComponent,
     QueryComponent,
     QuerySaveComponent,
-    QuerySaveToTextPipe
+    QuerySaveToTextPipe,
+    LoginComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

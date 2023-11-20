@@ -1,0 +1,32 @@
+<div class="contentP">
+    <!-- animación de carga -->
+    <ngx-loading [show]="cargando"
+        [config]="{ backdropBorderRadius: '3px', primaryColour: '#00ff66', secondaryColour: '#ff6600', tertiaryColour: '#6600ff', fullScreenBackdrop: true }">
+    </ngx-loading>
+
+    <!-- login  -->
+    <div class="card-login">
+        <div class="card-header">
+            <h5>login</h5>
+        </div>
+        <div class="card-body">
+            <!-- Formulario de de login-->
+            <form class="form-group was-validated" [formGroup]="loginForm" novalidate>
+                <div class="row">
+                    <!-- Nombre del usuario -->
+                    <div class="col-12">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" class="form-control" formControlName="username" />
+                    </div>
+                </div>
+                <br><br>
+                <div class="row">
+                    <div class="col-12">
+                    <button class="btn btn-secondary" [disabled]="loginForm.invalid"
+                    (click)="login()">Login</button>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

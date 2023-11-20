@@ -1,0 +1,40 @@
+/* Cambio de colo el logo nombre generador de consultas
+qutando el estilo de link */
+.logo {
+    color: #ffffff;
+}
+/* Quita el color a los botones primary
+para evitar botones con estilo no seleccionados */
+.btn, .btn-primary {
+    color: #ffffff;
+    background-color: rgb(65, 105, 225, 0.0);
+    border-color: rgb(65, 105, 225, 0.0);
+}
+/* Se le da un contorno a los botones al 
+posicionarse sobre ellos y aspi dar
+un indicador de que boton se va  seleccionar y cual no */
+.btn-primary:hover {
+    color: #ffffff;
+    background-color: rgb(65, 105, 225, 0.0);
+    border-color: rgb(65, 105, 225);
+}
+/* Se le da un colo y estilo al boton de la ruta activa */
+.active button {
+    color: whitesmoke;
+    background-color: #0c8cff;
+    border-color:#0c8cff;
+}
+/* Estilo propio al boton cerrar sesion
+permitiendo identificar donde se encuentra */
+.btn-primary-sesion {
+    color: whitesmoke;
+    background-color: rgba(12, 142, 255, 0);
+    border-color:#0c8cff;
+}
+/*  Un estilo al momento de pasar el mouse por encima
+permitiendo resaltar el botona seleccionar */
+.btn-primary-sesion:hover {
+    color: whitesmoke;
+    background-color: #0c8cff;
+    border-color:#0c8cff;
+}
