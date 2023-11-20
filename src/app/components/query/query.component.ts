@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Query } from 'src/app/models/query';
+import { QuerySave } from 'src/app/models/query-save';
+import { Comment } from 'src/app/models/comment';
 import { SchedulesDTO } from 'src/app/models/schedules-dto';
 import { BigQueryService } from 'src/app/services/big-query.service';
+import { QueryService } from 'src/app/services/query.service';
+import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-query',
@@ -10,6 +15,9 @@ import { BigQueryService } from 'src/app/services/big-query.service';
   styleUrls: ['./query.component.css']
 })
 export class QueryComponent implements OnInit {
+
+  //Variable para determina el cierre del Modal
+  closeResult = '';
 
   // Expresion regular para números
   regNumero = '[0-9]+'
@@ -43,18 +51,47 @@ export class QueryComponent implements OnInit {
     conditiaonal: new FormControl('')
   });
 
+  queryForm = new FormGroup({
+    name: new FormControl(''),
+    commentary: new FormControl('')
+  });
+
   constructor(
     private bigQueryService: BigQueryService,
-    private toastr: ToastrService
+    private queryService: QueryService,
+    private toastr: ToastrService,
+    private modalService: NgbModal,
+    private config: NgbModalConfig,
   ) {
     this.schedulesList = [];
+    config.backdrop = 'static';
+    config.keyboard = false;
   }
 
   ngOnInit(): void {
+    this.verificarQueryLoad();
+  }
+
+  //  Método encargado de verifica storage en busca de una query a precargar en el formulario
+  verificarQueryLoad() {
     this.cargando = true;
     setTimeout(() => {
+      const queryLoad = sessionStorage.getItem('querySave');
+
+      if (queryLoad != null) {
+        const query = JSON.parse(queryLoad);
+
+        this.filtrarForm.get('gameNumber')?.setValue(query.gamenumber ? query.gamenumber : '');
+        this.filtrarForm.get('dayNight')?.setValue(query.daynight ? query.daynight : '');
+        this.filtrarForm.get('duration')?.setValue(query.duration ? query.duration : '');
+        this.filtrarForm.get('status')?.setValue(query.status ? query.status : '');
+        this.filtrarForm.get('year')?.setValue(query.year ? query.year : '');
+
+        sessionStorage.removeItem('querySave');
+      }
+      
       this.cargando = false;
-    }, 2000);
+    }, 1000);
   }
 
   // Método que ejecuta la consulta y solicita a la api Bigquery
@@ -100,6 +137,112 @@ export class QueryComponent implements OnInit {
     this.filtrarForm.get('conditiaonal')?.setValue('');
 
     this.ejecutarConsultar();
+  }
+
+  // Método encargado de limpiar el formulario de guardar query
+  limpiarFormQuery() {
+    this.modalService.dismissAll('Close click');
+    this.queryForm.reset();
+  }
+
+  // Método encargado de abrir el modal de guardar query
+  openGuardarQuery(contentSave?: any) {
+    const gameNumber = this.filtrarForm.controls['gameNumber'].value;
+    const dayNight = this.filtrarForm.controls['dayNight'].value;
+    const duration = this.filtrarForm.controls['duration'].value;
+    const status = this.filtrarForm.controls['status'].value;
+    const year = this.filtrarForm.controls['year'].value;
+
+    if ((gameNumber !== null && gameNumber !== '') || (dayNight !== null && dayNight !== '')
+      || (duration !== null && duration !== '') || (status !== null && status !== '')
+      || (year !== null && year !== '')
+    ) {
+      this.open(contentSave, '');
+    } else {
+      this.cargando = false;
+      this.toastr.warning("Por favor selecciona un campo de busqueda a guardar", "Proceso fallido");
+    }
+  }
+
+  // Métdodo encargado de guardar la query
+  guardarQuery() {
+    this.cargando = true;
+
+    const gameNumber = this.filtrarForm.controls['gameNumber'].value;
+    const dayNight = this.filtrarForm.controls['dayNight'].value;
+    const duration = this.filtrarForm.controls['duration'].value;
+    const status = this.filtrarForm.controls['status'].value;
+    const year = this.filtrarForm.controls['year'].value;
+
+    const name = this.queryForm.controls['name'].value;
+    const commentary = this.queryForm.controls['commentary'].value;
+
+    if ((gameNumber !== null && gameNumber !== '') || (dayNight !== null && dayNight !== '')
+      || (duration !== null && duration !== '') || (status !== null && status !== '')
+      || (year !== null && year !== '')
+    ) {
+
+      const querySave = new QuerySave();
+      const comment = new Comment();
+      const query = new Query();
+
+      querySave.gamenumber = gameNumber;
+      querySave.daynight = dayNight;
+      querySave.duration = duration;
+      querySave.status = status;
+      querySave.year = year;
+
+      query.name = name;
+      query.createby = 'Sergio'; // Seleccionar usuario en sesion
+
+      if (commentary) {
+        comment.commentary = commentary;
+        comment.userregister = "Pepito"; // Seleccionar usuario en sesion
+
+        query.comments.push(comment);
+      }
+
+      query.querysave = querySave;
+
+      this.queryService.saveQuery(query).subscribe(resp => {
+        if (resp.success) {
+          this.modalService.dismissAll('Save click');
+          this.toastr.success(resp.message, "Proceso exitoso");
+          this.cargando = false;
+          this.limpiarFormQuery();
+        } else {
+          this.cargando = false;
+          this.toastr.error(resp.message, "Proceso fallido");
+        }
+      }, error => {
+        this.cargando = false;
+        this.toastr.error(error.message, "Proceso fallido");
+      });
+    } else {
+      this.cargando = false;
+      this.toastr.warning("Por favor selecciona un campo de busqueda a guardar", "Proceso fallido");
+    }
+
+  }
+
+  /** Funciones para abrir y cerrar modal ng **/
+  open(content: any, tamaño: any) {
+
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: tamaño, backdropClass: 'light-blue-backdrop', centered: true }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
   }
 
   // Método encargado de cargar una página anterior y verifica si es la primer página

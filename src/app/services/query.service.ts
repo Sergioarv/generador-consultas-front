@@ -16,7 +16,7 @@ export class QueryService {
 
   }
 
-  filter(name: any, userregister: any, pag: any, sizePag: any): Observable<any> {
+  filter(name: any, createby: any, pag: any, sizePag: any): Observable<any> {
 
     const URL = GlobalConstants.URL_ENDPOINT + GlobalConstants.URL_QUERY_FILTER;
 
@@ -30,11 +30,11 @@ export class QueryService {
       }
     }
 
-    if (userregister) {
+    if (createby) {
       if (params.length > 0) {
-        params = params.concat('&userregister=').concat(userregister);
+        params = params.concat('&createby=').concat(createby);
       } else {
-        params = params.concat('?userregister=').concat(userregister);
+        params = params.concat('?createby=').concat(createby);
       }
     }
 

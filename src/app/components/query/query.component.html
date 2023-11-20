@@ -16,7 +16,7 @@
                     <!-- Numero de juegos del partido -->
                     <div class="col-s-12 col-md-6">
                         <label for="gameId">Numero de juegos: </label>
-                        <input type="text" class="form-control" formControlName="gameNumber" [pattern]="regNumero">
+                        <input type="text" class="form-control" formControlName="gameNumber" [pattern]="regNumero" autofocus>
                         <div class="invalid-feedback">Por favor ingrese solo números</div>
                     </div>
                     <!-- Ciclo dia o noche del partido -->
@@ -40,7 +40,7 @@
                         <select class="form-control" formControlName="status">
                             <option selected value=''>Seleccione un estado del partido</option>
                             <option value='closed'>Cerrado</option>
-                            <option value='canceled'>Cancelado</option>
+                            <option value='cancelled'>Cancelado</option>
                             <option value='unnecessary'>Innecesario</option>
                         </select>
                     </div>
@@ -62,14 +62,18 @@
                 <br>
                 <!-- Botones de accion, buscar, limpiar y guardar query -->
                 <div class="row">
-                    <button class="btn btn-primary" (click)="ejecutarConsultar()">Ejecutar consulta</button>&nbsp;&nbsp;
-                    <button class="btn btn-danger" (click)="limpiarFormFilter()">Borrar</button>&nbsp;&nbsp;
-                    <button class="btn btn-success">Guardar Query</button>
+                    <div class="col">
+                        <button class="btn btn-primary" (click)="ejecutarConsultar()">Ejecutar
+                            consulta</button>&nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="limpiarFormFilter()">Borrar</button>&nbsp;&nbsp;
+                        <button class="btn btn-success" (click)="openGuardarQuery(contentSave)">Guardar Query</button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
     <br>
+
     <!-- Tabla de listado -->
     <div class="card">
         <div class="card-header">
@@ -171,4 +175,30 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal Guardar Query -->
+    <ng-template #contentSave let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h5 class="modal-tittle" id="modal-basic-tittle">Guardar Query</h5>
+        </div>
+        <div class="modal-body">
+            <form class="form-group was-validated" [formGroup]="queryForm" novalidate>
+                <div class="row">
+                    <div class="col-12">
+                        <label>Nombre de la Query</label>
+                        <input type="text" class="form-control" formControlName="name" required>
+                        <div class="invalid-feedback">Por favor ingrese un nombre unico a la query</div>
+                    </div>
+                    <div class="col-12">
+                        <label>Comentario</label>
+                        <input type="text" class="form-control" formControlName="commentary">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success" (click)="guardarQuery()" [disabled]="!queryForm.valid">Guardar Query</button>
+            <button class="btn btn-danger" (click)="limpiarFormQuery()">Cancelar</button>&nbsp;&nbsp;
+        </div>
+    </ng-template>
 </div>
