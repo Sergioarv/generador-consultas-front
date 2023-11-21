@@ -8,6 +8,7 @@ import { GlobalConstants } from '../utils/constants/global.constants';
 })
 export class BigQueryService {
 
+
   constructor(
     private http: HttpClient
   ) { }
@@ -75,5 +76,11 @@ export class BigQueryService {
     }
 
     return this.http.get<any>(URL + params);
+  }
+
+  graficas(): Observable<any> {
+    const URL = GlobalConstants.URL_ENDPOINT + GlobalConstants.URL_BIGQUERY_GRAFICAS;
+
+    return this.http.get<any>(URL);
   }
 }

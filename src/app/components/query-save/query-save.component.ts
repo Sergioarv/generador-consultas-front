@@ -171,7 +171,6 @@ export class QuerySaveComponent implements OnInit {
       this.cargando = false;
     });
   }
-
   /** Funciones para abrir y cerrar modal ng **/
   open(content: any, tamaño: any) {
 

@@ -7,6 +7,7 @@ export class GlobalConstants {
 
         //BigQuery
         public static URL_BIGQUERY = '/bigquery';
+        public static URL_BIGQUERY_GRAFICAS = '/bigquery/graficas';
 
         //Query
         public static URL_QUERY = '/query';

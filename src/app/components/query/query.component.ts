@@ -9,6 +9,9 @@ import { BigQueryService } from 'src/app/services/big-query.service';
 import { QueryService } from 'src/app/services/query.service';
 import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/services/auth.service';
+import { DatosFrecuency } from 'src/app/models/datos-frecuency';
+
+declare const google: any;
 
 @Component({
   selector: 'app-query',
@@ -42,6 +45,10 @@ export class QueryComponent implements OnInit {
   // Lista de los datos retornados por la api BigQuery de Google
   schedulesList: SchedulesDTO[];
 
+  statusGameList: DatosFrecuency[];
+  dayNightGames: DatosFrecuency[];
+  durationFrequencyList: DatosFrecuency[];
+
   // Formulario de filtro para BigQuery
   filtrarForm = new FormGroup({
     gameNumber: new FormControl('', Validators.pattern(this.regNumero)),
@@ -66,6 +73,9 @@ export class QueryComponent implements OnInit {
     private authService: AuthService
   ) {
     this.schedulesList = [];
+    this.statusGameList = [];
+    this.dayNightGames = [];
+    this.durationFrequencyList = [];
     config.backdrop = 'static';
     config.keyboard = false;
   }
@@ -91,8 +101,7 @@ export class QueryComponent implements OnInit {
 
         sessionStorage.removeItem('querySave');
       }
-
-      this.cargando = false;
+      this.getDatosGraficas();
     }, 1000);
   }
 
@@ -223,6 +232,122 @@ export class QueryComponent implements OnInit {
       this.toastr.warning("Por favor selecciona un campo de busqueda a guardar", "Proceso fallido");
     }
   }
+
+  getDatosGraficas() {
+
+    this.bigQueryService.graficas().subscribe(resp => {
+
+      this.statusGameList = resp.data.statusGameList;
+      this.dayNightGames = resp.data.dayNightGames;
+      this.durationFrequencyList = resp.data.durationFrequencyList;
+
+      if (resp.success) {
+        this.drawChartUno();
+        this.drawChartDos();
+        this.drawChartTres();
+        this.cargando = false;
+      }
+    }, error => {
+      this.toastr.error(error.message, "Proceso fallido");
+      this.cargando = false;
+    });
+  }
+  
+  // Métodos encargados de graficar
+  drawChartUno() {
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(() => {
+      var data = new google.visualization.DataTable();
+
+      data.addColumn('string', 'Estado de partido');
+      data.addColumn('number', 'Cantidad de partidos');
+
+      this.dayNightGames.forEach(element => {
+        const verificarDato = element.frecuency >= 100 ? true : false;
+        const optimizarDato = verificarDato ? element.frecuency/100 : element.frecuency;
+        const repararLabel = verificarDato ? element.value.concat('(Dato dividido en 100 para visualización)') : element.value;
+        data.addRows([
+          [repararLabel, optimizarDato],
+        ]);
+      });
+
+      var options = {
+        title: 'Proporción de Juegos Diurnos/Nocturnos',
+        hAxis: { title: 'Diurnos' },
+        vAxis: { title: 'Nocturnos' },
+        legend: 'none',
+        is3D: true,
+        slices: {
+          0: { color: '#109618' },
+          1: { color: '#FF9900' },
+          2: { color: '#CCCCCC'}
+        }
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('chartUno_div'));
+      chart.draw(data, options);
+    });
+  }
+  
+  drawChartDos() {
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(() => {
+      var data = new google.visualization.DataTable();
+
+      data.addColumn('string', 'Ciclo');
+      data.addColumn('number', 'Cantidad de partidos');
+
+      this.statusGameList.forEach(element => {
+        const verificarDato = element.frecuency >= 100 ? true : false;
+        const optimizarDato = verificarDato ? element.frecuency/1000 : element.frecuency;
+        const repararLabel = verificarDato ? element.value.concat('(Dato dividido en 1000 para visualización)') : element.value;
+        data.addRows([
+          [repararLabel, optimizarDato],
+        ]);
+      });
+
+      var options = {
+        title: 'Estado de los partidos',
+        hAxis: { title: 'Estados' },
+        vAxis: { title: 'Número de partidos' },
+        legend: 'none',
+        pieSliceText: 'label'
+      };
+
+      var chart = new google.visualization.ColumnChart(document.getElementById('chartDos_div'));
+      chart.draw(data, options);
+    });
+  }
+
+  drawChartTres() {
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(() => {
+      var data = new google.visualization.DataTable();
+
+      data.addColumn('string', 'Duración');
+      data.addColumn('number', 'Frecuencia');
+
+      this.durationFrequencyList.forEach(element => {
+        const verificarDato = element.frecuency >= 100 ? true : false;
+        const optimizarDato = verificarDato ? element.frecuency/1000 : element.frecuency;
+        const repararLabel = verificarDato ? element.value.concat('(Dato dividido en 1000 para visualización)') : element.value;
+        data.addRows([
+          [repararLabel, optimizarDato],
+        ]);
+      });
+
+      var options = {
+        title: 'Grafica duracion frecuencia',
+        hAxis: { title: 'Duración' },
+        vAxis: { title: 'Frecuencia' },
+        legend: 'none'
+      };
+
+      var chart = new google.visualization.ScatterChart(document.getElementById('chartTres_div'));
+      chart.draw(data, options);
+    });
+  }
+
 
   /** Funciones para abrir y cerrar modal ng **/
   open(content: any, tamaño: any) {
